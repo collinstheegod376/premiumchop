@@ -62,6 +62,13 @@ export const STATUS_LABELS: Record<OrderStatus, string> = {
   delivered: "Delivered",
 };
 
+export const STATUS_COLORS: Record<OrderStatus, string> = {
+  payment_made: "text-yellow-500 bg-yellow-500/10",
+  processing: "text-blue-500 bg-blue-500/10",
+  payment_received: "text-emerald-500 bg-emerald-500/10",
+  delivered: "text-gold-500 bg-gold-500/10",
+};
+
 export const STATUS_STEPS: OrderStatus[] = [
   "payment_made", "processing", "payment_received", "delivered"
 ];
