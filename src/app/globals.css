@@ -133,6 +133,38 @@
   .input::placeholder { color: var(--text-muted); }
   .input:disabled { opacity: 0.6; cursor: not-allowed; }
 
+  .input-field {
+  @apply w-full px-4 py-3 rounded-xl border transition-all duration-200
+         focus:outline-none focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500/60;
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+/* Force dark inputs in dark mode */
+.dark .input-field {
+  background-color: #0d1117;
+  border-color: #1e2a36;
+  color: #f8f9fa;
+}
+
+.dark .input-field::placeholder {
+  color: #4a5568;
+}
+
+/* Force readable inputs in light mode */
+.light .input-field,
+:root:not(.dark) .input-field {
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+  color: #0d1117;
+}
+
+.light .input-field::placeholder,
+:root:not(.dark) .input-field::placeholder {
+  color: #9ca3af;
+}
+
   .label {
     display: block;
     font-size: 0.875rem;
@@ -219,4 +251,10 @@
     border-radius: 8px;
   }
   @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+}
+
+.dark input,
+.dark textarea,
+.dark select {
+  color-scheme: dark;
 }
