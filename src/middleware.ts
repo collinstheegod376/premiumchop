@@ -13,7 +13,9 @@ export async function middleware(request: NextRequest) {
       cookies: {
         getAll() { return request.cookies.getAll(); },
         setAll(cookiesToSet: CookieItem[]) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value)
+          );
           supabaseResponse = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options)
@@ -23,16 +25,18 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const { data: { session } } = await supabase.auth.getSession();
+  // Use getUser() — NOT getSession() — for reliable middleware auth
+  const { data: { user } } = await supabase.auth.getUser();
+
   const { pathname } = request.nextUrl;
+  const isAuthPage = pathname.startsWith("/auth");
+  const isApiRoute = pathname.startsWith("/api");
+  const isRoot     = pathname === "/";
 
-  const publicPaths = ["/auth/login", "/auth/signup"];
-  const isPublic = publicPaths.some((p) => pathname.startsWith(p));
-
-  if (!session && !isPublic && pathname !== "/") {
+  if (!user && !isAuthPage && !isApiRoute && !isRoot) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
-  if (session && isPublic) {
+  if (user && isAuthPage) {
     return NextResponse.redirect(new URL("/shop", request.url));
   }
 
@@ -40,5 +44,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
 };
